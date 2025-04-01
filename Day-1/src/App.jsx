@@ -1,4 +1,4 @@
-import { use, useReducer, useState } from 'react'
+import { useReducer, useState } from 'react'
 import './App.css'
 
 
@@ -7,37 +7,37 @@ const reducer = (state, action) => {
 
   switch (action.type) {
     case "Add":
-      return [...state, { name: action.userName, completed: false }]
+      return [...state, { name1: action.userName, completed: false }]
 
     case "delete":
-      return state.filter((item, index) => index !== action.index)
+      return state.filter((_, index) => index !== action.index)
 
-    // case "edit":  
-    // return state.map((item, index) =>{ 
-    //   false ? {...item, name:action.userName, completed: false} : item
-    // }
-    // )
+    case "edit":  
+    return state.map((item, index) =>{ 
+      index === action.editIndex ? {...item, name1:action.userName} : item
+    }
+    )
   }
 
 }
 
 function App() {
 
-  const [todo, dispatch] = useReducer(reducer, [{ name: "Akash", completed: false }])
+  const [todo, dispatch] = useReducer(reducer, [{ name1: "Akash", completed: false }])
   const [userName, setUserName] = useState("")
-  const [editIndex, setEditIndex] = useState(false)
+  const [editIndex, setEditIndex] = useState(null)
+  console.log(editIndex);
   console.log(todo);
+  
   
 
   function Add(e) {
     e.preventDefault()
-    if (userName !== "" && editIndex === false) {
-      // let userName2 = userName.trim()
+    if (editIndex === null) {
       dispatch({ type: "Add", userName})
     }else{
-      dispatch({ type: "edit", userName})
-      setEditIndex(true)
-
+      dispatch({ type: "edit", userName , editIndex})
+      editIndex(null)
     }
     setUserName("")
   }
@@ -47,8 +47,8 @@ function App() {
 
   }
   function Edit(index) {
-    setUserName(todo[index].name)
-    setEditIndex(!editIndex)
+    setUserName(todo[index].name1)
+    setEditIndex(index)
     // dispatch({ type: "edit", index })
 
   }
@@ -61,7 +61,7 @@ function App() {
       <form action="" onSubmit={Add}>
 
         <input type="text" name="" id="" className='border my-10' value={userName} onChange={(e) => setUserName(e.target.value)} />
-        <button className='bg-green-600 px-3 py1 rounded-md text-white'>Add</button>
+        <button className='bg-green-600 px-3 py1 rounded-md text-white'>{editIndex === null ? "Add" : "Edit"}</button>
       </form>
 
         <table className='flex justify-center'>
@@ -74,7 +74,7 @@ function App() {
 
                 </td>
                 <td>{index + 1}</td>
-                <td>{item.name}</td>
+                <td>{item.name1}</td>
                 <td>
 
                   <button className='bg-red-600 px-3 py1 rounded-md text-white' onClick={() => Delete(index)}>Delete</button>
