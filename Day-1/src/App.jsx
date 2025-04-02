@@ -10,13 +10,17 @@ const reducer = (state, action) => {
       return [...state, { name1: action.userName, completed: false }]
 
     case "delete":
-      return state.filter((_, index) => index !== action.index)
+      return state.filter((item, index) => index !== action.index)
 
     case "edit":  
-    return state.map((item, index) =>{ 
+    return state.map((item, index) =>
       index === action.editIndex ? {...item, name1:action.userName} : item
-    }
     )
+    case "checked":  
+    return state.map((item, index) =>
+      index === action.index ? {...item, completed: !item.completed} : item
+    )
+    
   }
 
 }
@@ -26,10 +30,8 @@ function App() {
   const [todo, dispatch] = useReducer(reducer, [{ name1: "Akash", completed: false }])
   const [userName, setUserName] = useState("")
   const [editIndex, setEditIndex] = useState(null)
-  console.log(editIndex);
-  console.log(todo);
-  
-  
+  // const [checked, setChecked] = useState(false)
+
 
   function Add(e) {
     e.preventDefault()
@@ -37,7 +39,7 @@ function App() {
       dispatch({ type: "Add", userName})
     }else{
       dispatch({ type: "edit", userName , editIndex})
-      editIndex(null)
+      setEditIndex(null)
     }
     setUserName("")
   }
@@ -67,10 +69,10 @@ function App() {
         <table className='flex justify-center'>
           <tbody className='w-full'>
             {todo.map((item, index) => {
-              return <tr key={index} className='flex justify-around my-5 border'>
+              return <tr key={index} className={`flex justify-around my-5 ${item.completed ? "line-through" : ""}`}>
 
-                <td className='border'>
-                  <input type="checkbox" name="" id=""/>
+                <td className=''>
+                  <input type="checkbox" name="" id="" checked={item.completed} onChange={()=> dispatch({type:"checked", index})}/>
 
                 </td>
                 <td>{index + 1}</td>
