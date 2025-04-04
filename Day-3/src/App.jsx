@@ -62,10 +62,6 @@ function App() {
         </div> */}
 
         </div>
-
-        
-
-     
     </>
 
   )
